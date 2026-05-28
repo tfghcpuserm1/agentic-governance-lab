@@ -1,0 +1,11 @@
+{
+  "name": "agentic-governance-lab",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test.js"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
