@@ -1,0 +1,31 @@
+name: Semgrep Scan
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  semgrep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install semgrep
+        run: pip install semgrep
+      - name: Run semgrep
+        run: semgrep --config .semgrep.yml --json --output semgrep-results.json
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-results
+          path: semgrep-results.json
+      - name: Fail on errors
+        run: |
+          if [ ! -f semgrep-results.json ]; then echo "No results file"; exit 0; fi
+          COUNT=$(jq '.results | length' semgrep-results.json)
+          if [ "$COUNT" -gt 0 ]; then
+            echo "Semgrep found issues:"
+            jq -r '.results[] | "- " + .check_id + " " + .path + ":" + (.start.line|tostring) + " - " + .extra.message' semgrep-results.json
+            exit 1
+          fi

@@ -1,0 +1,14 @@
+rules:
+  - id: no-eval
+    pattern: eval(...)
+    message: "Avoid eval() — dynamic code execution is risky."
+    severity: ERROR
+    languages:
+      - javascript
+
+  - id: no-child-process-exec
+    pattern: exec(...)
+    message: "Avoid child_process.exec; prefer spawn with sanitized inputs."
+    severity: WARNING
+    languages:
+      - javascript
